@@ -8,38 +8,25 @@ import java.util.Arrays;
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    private Resume[] storage = new Resume[10000];
-    private int index = 0;
+    private Resume[] storage = new Resume[10_000];
+    private int size = 0;
 
     public void update(Resume resume) {
-        int i = check(resume.getUuid());
-        if (i >= 0) {
-            storage[i] = resume;
+        int index = getIndex(resume.getUuid());
+        if (index >= 0) {
+            storage[index] = resume;
             System.out.println(resume + " updated!");
         } else {
-            printErrorResumeNotPresent(resume.getUuid());
+            printErrorIfNotExist(resume.getUuid());
         }
-    }
-
-    public int check(String uuid) {
-        for (int i = 0; i < index; i++) {
-            if (storage[i].getUuid().equals(uuid)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public void printErrorResumeNotPresent(String uuid) {
-        System.out.println("ERROR: " + uuid + " does not present!");
     }
 
     public void save(Resume resume) {
-        int i = check(resume.getUuid());
-        if (i < 0) {
-            if (index < storage.length) {
-                storage[index] = resume;
-                index++;
+        int index = getIndex(resume.getUuid());
+        if (index < 0) {
+            if (size < storage.length) {
+                storage[size] = resume;
+                size++;
             } else {
                 System.out.println("The array is full");
             }
@@ -49,39 +36,51 @@ public class ArrayStorage {
     }
 
     public Resume get(String uuid) {
-        int i = check(uuid);
-        if (i >= 0) {
-            return storage[i];
-        } else {
-            printErrorResumeNotPresent(uuid);
-            return null;
+        int index = getIndex(uuid);
+        if (index >= 0) {
+            return storage[index];
         }
+        printErrorIfNotExist(uuid);
+        return null;
     }
 
     /**
      * @return array, contains only Resumes in storage (without null)
      */
     public Resume[] getAll() {
-        return Arrays.copyOf(storage, index);
+        return Arrays.copyOf(storage, size);
     }
 
     public void delete(String uuid) {
-        int i = check(uuid);
-        if (i >= 0) {
-            storage[i] = storage[index - 1];
-            storage[index - 1] = null;
-            index--;
+        int index = getIndex(uuid);
+        if (index >= 0) {
+            storage[index] = storage[size - 1];
+            storage[size - 1] = null;
+            size--;
         } else {
-            printErrorResumeNotPresent(uuid);
+            printErrorIfNotExist(uuid);
         }
     }
 
+    private int getIndex(String uuid) {
+        for (int index = 0; index < size; index++) {
+            if (storage[index].getUuid().equals(uuid)) {
+                return index;
+            }
+        }
+        return -1;
+    }
+
+    private void printErrorIfNotExist(String uuid) {
+        System.out.println("ERROR: " + uuid + " does not present!");
+    }
+
     public void clear() {
-        Arrays.fill(storage, 0, index - 1, null);
-        index = 0;
+        Arrays.fill(storage, 0, size, null);
+        size = 0;
     }
 
     public int size() {
-        return index;
+        return size;
     }
 }
