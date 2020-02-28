@@ -2,22 +2,10 @@ package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.model.Resume;
 
-import java.util.Arrays;
-
 /**
  * Array based storage for Resumes
  */
 public class ArrayStorage extends AbstractArrayStorage {
-
-    public void update(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index >= 0) {
-            storage[index] = resume;
-            System.out.println(resume + " updated!");
-        } else {
-            printErrorIfNotExist(resume.getUuid());
-        }
-    }
 
     public void save(Resume resume) {
         int index = getIndex(resume.getUuid());
@@ -31,10 +19,6 @@ public class ArrayStorage extends AbstractArrayStorage {
         } else {
             System.out.println("ERROR: " + resume + " does already present!");
         }
-    }
-
-    public Resume[] getAll() {
-        return Arrays.copyOfRange(storage, 0, size);
     }
 
     public void delete(String uuid) {
@@ -55,14 +39,5 @@ public class ArrayStorage extends AbstractArrayStorage {
             }
         }
         return -1;
-    }
-
-    private void printErrorIfNotExist(String uuid) {
-        System.out.println("ERROR: " + uuid + " does not present!");
-    }
-
-    public void clear() {
-        Arrays.fill(storage, 0, size, null);
-        size = 0;
     }
 }
