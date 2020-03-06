@@ -47,10 +47,6 @@ public abstract class AbstractArrayStorage implements Storage {
 
     protected abstract int getIndex(String uuid);
 
-    protected void printErrorIfNotExist(String uuid) {
-        System.out.println("ERROR: " + uuid + " does not present!");
-    }
-
     public Resume[] getAll() {
         return Arrays.copyOfRange(storage, 0, size);
     }
