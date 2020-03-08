@@ -17,4 +17,6 @@ public interface Storage {
     public void clear();
 
     public int size();
+
+    public int getStorageLimit();
 }

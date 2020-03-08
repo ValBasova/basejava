@@ -72,4 +72,8 @@ public abstract class AbstractArrayStorage implements Storage {
     public int size() {
         return size;
     }
+
+    public int getStorageLimit() {
+        return STORAGE_LIMIT;
+    }
 }
