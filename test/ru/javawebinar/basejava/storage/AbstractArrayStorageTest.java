@@ -7,6 +7,7 @@ import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
+import static ru.javawebinar.basejava.storage.AbstractArrayStorage.*;
 
 public abstract class AbstractArrayStorageTest {
 
@@ -57,8 +58,8 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void getAll() throws Exception {
-        Resume[] expected = storage.getAll();
-        Resume[] actual = new Resume[]{new Resume(UUID_1), new Resume(UUID_2), new Resume(UUID_3)};
+        Resume[] actual = storage.getAll();
+        Resume[] expected = new Resume[]{resume_1, resume_2, resume_3};
         Assert.assertArrayEquals(expected, actual);
     }
 
@@ -71,7 +72,7 @@ public abstract class AbstractArrayStorageTest {
     @Test(expected =  StorageException.class)
     public void saveOverflow() throws Exception {
         try {
-            for (int i = storage.size(); i < storage.getStorageLimit(); i++) {
+            for (int i = storage.size(); i < STORAGE_LIMIT; i++) {
                 storage.save(new Resume());
             }
         } catch (StorageException e) {
