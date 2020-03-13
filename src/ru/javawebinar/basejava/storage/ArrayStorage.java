@@ -8,22 +8,22 @@ import ru.javawebinar.basejava.model.Resume;
 public class ArrayStorage extends AbstractArrayStorage {
 
     @Override
-    protected void insertElement(Resume resume, int index) {
-        storage[size] = resume;
-    }
-
-    @Override
-    protected void removeElement(int index) {
-        storage[index] = storage[size - 1];
-    }
-
-    @Override
-    protected int getIndex(String uuid) {
+    protected int findElement(String uuid) {
         for (int index = 0; index < size; index++) {
-            if (storage[index].getUuid().equals(uuid)) {
+            if (storage[index].getUuid() == uuid) {
                 return index;
             }
         }
         return -1;
+    }
+
+    @Override
+    protected void insertArrayElement(Resume resume, int index) {
+        storage[size] = resume;
+    }
+
+    @Override
+    protected void removeArrayElement(int index) {
+        storage[index] = storage[size - 1];
     }
 }
