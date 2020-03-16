@@ -35,7 +35,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     @Override
     protected void insertElement(Resume resume, int index) {
         if (size < STORAGE_LIMIT) {
-            insertArrayElement(resume, index);
+            insertResume(resume, index);
             size++;
         } else {
             throw new StorageException("Storage overflow", resume.getUuid());
@@ -49,12 +49,12 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     @Override
     public void removeElement(int index) {
-        removeArrayElement(index);
+        removeResume(index);
         storage[size - 1] = null;
         size--;
     }
 
-    protected abstract void insertArrayElement(Resume resume, int index);
+    protected abstract void insertResume(Resume resume, int index);
 
-    protected abstract void removeArrayElement(int index);
+    protected abstract void removeResume(int index);
 }

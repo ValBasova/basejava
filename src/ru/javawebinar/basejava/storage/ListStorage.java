@@ -26,7 +26,7 @@ public class ListStorage extends AbstractStorage {
     @Override
     protected int findElement(String uuid) {
         for (int index = 0; index < storage.size(); index++) {
-            if (storage.get(index).getUuid() == uuid) {
+            if (storage.get(index).getUuid().equals(uuid)) {
                 return index;
             }
         }

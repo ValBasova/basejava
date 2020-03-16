@@ -10,7 +10,7 @@ public class ArrayStorage extends AbstractArrayStorage {
     @Override
     protected int findElement(String uuid) {
         for (int index = 0; index < size; index++) {
-            if (storage[index].getUuid() == uuid) {
+            if (storage[index].getUuid().equals(uuid)) {
                 return index;
             }
         }
@@ -18,12 +18,12 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void insertArrayElement(Resume resume, int index) {
+    protected void insertResume(Resume resume, int index) {
         storage[size] = resume;
     }
 
     @Override
-    protected void removeArrayElement(int index) {
+    protected void removeResume(int index) {
         storage[index] = storage[size - 1];
     }
 }
