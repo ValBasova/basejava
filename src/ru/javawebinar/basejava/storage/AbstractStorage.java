@@ -8,14 +8,14 @@ public abstract class AbstractStorage implements Storage {
 
     @Override
     public void update(Resume resume) {
-        updateElement(resume, seachElement(resume.getUuid()));
+        updateElement(resume, searchElement(resume.getUuid()));
     }
 
     @Override
     public void save(Resume resume) {
-        int index = findElement(resume.getUuid());
-        if (index < 0) {
-            insertElement(resume, index);
+        Object key = findElement(resume.getUuid());
+        if (!isElementExist(key)) {
+            insertElement(resume, key);
         } else {
             throw new ExistStorageException(resume.getUuid());
         }
@@ -23,30 +23,32 @@ public abstract class AbstractStorage implements Storage {
 
     @Override
     public Resume get(String uuid) {
-        return getElement(seachElement(uuid));
+        return getElement(searchElement(uuid));
     }
 
     @Override
     public void delete(String uuid) {
-        removeElement(seachElement(uuid));
+        removeElement(searchElement(uuid));
     }
 
-    protected int seachElement(String uuid) {
-        int index = findElement(uuid);
-        if (index >= 0) {
-            return index;
+    protected Object searchElement(String uuid) {
+        Object key = findElement(uuid);
+        if (isElementExist(key)) {
+            return key;
         } else {
             throw new NotExistStorageException(uuid);
         }
     }
 
-    protected abstract int findElement(String uuid);
+    protected abstract Object findElement(String uuid);
 
-    protected abstract void updateElement(Resume resume, int index);
+    protected abstract boolean isElementExist(Object o);
 
-    protected abstract void insertElement(Resume resume, int index);
+    protected abstract void updateElement(Resume resume, Object key);
 
-    protected abstract Resume getElement(int Index);
+    protected abstract void insertElement(Resume resume, Object key);
 
-    protected abstract void removeElement(int index);
+    protected abstract Resume getElement(Object o);
+
+    protected abstract void removeElement(Object o);
 }
