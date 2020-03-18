@@ -25,7 +25,7 @@ public class MapStorage extends AbstractStorage {
 
     @Override
     protected Object findElement(String uuid) {
-        if (storage.containsKey(uuid)) {
+        if (isElementExist(uuid)) {
             return uuid;
         }
         return -1;
@@ -47,12 +47,12 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume getElement(Object o) {
-        return storage.get(o);
+    protected Resume getElement(Object key) {
+        return storage.get(key);
     }
 
     @Override
-    protected void removeElement(Object o) {
-        storage.remove(o);
+    protected void removeElement(Object key) {
+        storage.remove(key);
     }
 }

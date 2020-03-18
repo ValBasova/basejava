@@ -42,13 +42,13 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract Object findElement(String uuid);
 
-    protected abstract boolean isElementExist(Object o);
+    protected abstract boolean isElementExist(Object key);
 
     protected abstract void updateElement(Resume resume, Object key);
 
     protected abstract void insertElement(Resume resume, Object key);
 
-    protected abstract Resume getElement(Object o);
+    protected abstract Resume getElement(Object key);
 
-    protected abstract void removeElement(Object o);
+    protected abstract void removeElement(Object key);
 }
