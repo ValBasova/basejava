@@ -25,10 +25,7 @@ public class MapStorage extends AbstractStorage {
 
     @Override
     protected Object findElement(String uuid) {
-        if (isElementExist(uuid)) {
-            return uuid;
-        }
-        return -1;
+        return uuid;
     }
 
     @Override

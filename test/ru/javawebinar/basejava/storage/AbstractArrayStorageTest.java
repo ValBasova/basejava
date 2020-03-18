@@ -13,13 +13,6 @@ public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
         super(storage);
     }
 
-    @Test
-    public void getAll() throws Exception {
-        Resume[] actual = storage.getAll();
-        Resume[] expected = new Resume[]{storage.get("uuid1"), storage.get("uuid2"), storage.get("uuid3")};
-        Assert.assertArrayEquals(expected, actual);
-    }
-
     @Test(expected = StorageException.class)
     public void saveOverflow() throws Exception {
         try {

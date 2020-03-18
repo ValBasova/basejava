@@ -25,5 +25,6 @@ public class MapStorageTest extends AbstractStorageTest {
         expected.put("uuid2", storage.get("uuid2"));
         expected.put("uuid3", storage.get("uuid3"));
         Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected.size(), actual.size());
     }
 }
