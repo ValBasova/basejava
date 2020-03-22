@@ -7,15 +7,18 @@ import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class AbstractStorageTest {
     protected Storage storage;
 
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
-    private Resume resume_1 = new Resume(UUID_1);
-    private Resume resume_2 = new Resume(UUID_2);
-    private Resume resume_3 = new Resume(UUID_3);
+    private Resume resume_1 = new Resume(UUID_1, "Анна");
+    private Resume resume_2 = new Resume(UUID_2, "Гена");
+    private Resume resume_3 = new Resume(UUID_3, "Зена");
 
     public AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -30,11 +33,14 @@ public abstract class AbstractStorageTest {
     }
 
     @Test
-    public void getAll() throws Exception {
-        Resume[] actual = storage.getAll();
-        Resume[] expected = new Resume[]{resume_1, resume_2, resume_3};
-        Assert.assertArrayEquals(expected, actual);
-        Assert.assertEquals(expected.length, actual.length);
+    public void getAllSorted() throws Exception {
+        List<Resume> actual = storage.getAllSorted();
+        List<Resume> expected = new ArrayList<Resume>();
+        expected.add(resume_1);
+        expected.add(resume_2);
+        expected.add(resume_3);
+        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected.size(), actual.size());
     }
 
     @Test
@@ -50,19 +56,19 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() throws Exception {
-        Resume resume_4 = new Resume(UUID_1);
+        Resume resume_4 = new Resume(UUID_1, "Сеня");
         storage.update(resume_4);
         Assert.assertSame(resume_4, storage.get(UUID_1));
     }
 
     @Test(expected = NotExistStorageException.class)
     public void updateNotExist() throws Exception {
-        storage.update(new Resume());
+        storage.update(new Resume("Бася"));
     }
 
     @Test
     public void save() throws Exception {
-        Resume resume_4 = new Resume();
+        Resume resume_4 = new Resume("Бася");
         storage.save(resume_4);
         Assert.assertEquals(4, storage.size());
         Assert.assertEquals(resume_4, storage.get(resume_4.getUuid()));
