@@ -12,11 +12,8 @@ public class MapResumeStorage extends AbstractStorage {
     protected Map<String, Resume> storage = new HashMap<>();
 
     @Override
-    public List<Resume> getAllSorted() {
-        List<Resume> listResume = new ArrayList<Resume>(storage.values());
-        listResume.sort(nameComparator);
-        return listResume;
-
+    public List getListResume() {
+        return new ArrayList<Resume>(storage.values());
     }
 
     @Override
@@ -36,7 +33,7 @@ public class MapResumeStorage extends AbstractStorage {
 
     @Override
     protected boolean isElementExist(Object resume) {
-        return storage.containsValue(resume);
+        return !(resume == null);
     }
 
     @Override

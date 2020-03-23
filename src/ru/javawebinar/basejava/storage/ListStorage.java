@@ -9,8 +9,7 @@ public class ListStorage extends AbstractStorage {
     protected List<Resume> storage = new ArrayList<>();
 
     @Override
-    public List<Resume> getAllSorted() {
-        storage.sort(nameComparator);
+    public List getListResume() {
         return storage;
     }
 
