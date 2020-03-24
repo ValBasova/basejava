@@ -9,7 +9,7 @@ public class ListStorage extends AbstractStorage {
     protected List<Resume> storage = new ArrayList<>();
 
     @Override
-    public List getListResume() {
+    public List<Resume> getListResume() {
         return storage;
     }
 

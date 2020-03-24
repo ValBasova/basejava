@@ -3,7 +3,6 @@ package ru.javawebinar.basejava.storage;
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,9 +13,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected int size = 0;
 
     @Override
-    public List getListResume() {
-        Resume[] resumes = Arrays.copyOfRange(storage, 0, size);
-        return new ArrayList(Arrays.asList(resumes));
+    public List<Resume> getListResume() {
+        return Arrays.asList(Arrays.copyOf(storage, size));
     }
 
     @Override
