@@ -23,9 +23,6 @@ public class Resume {
         this.uuid = uuid;
         this.fullName = fullName;
         contacts = new HashMap<>();
-        for (ContactType type : ContactType.values()) {
-            contacts.put(type, null);
-        }
         sections = new HashMap<>();
         for (SectionType type : SectionType.values()) {
             switch (type) {
@@ -86,11 +83,7 @@ public class Resume {
                 '}';
     }
 
-    public <T extends AbstractSection> T  getSection(SectionType type) {
-        return (T)sections.get(type);
-    }
-
-    public void fillContacts(ContactType type, String content){
-        contacts.put(type, content);
+    public <T extends AbstractSection> T getSection(SectionType type) {
+        return (T) sections.get(type);
     }
 }
