@@ -16,6 +16,7 @@ public class ListSection extends AbstractSection {
     }
 
     public void setTextList(List<String> textList) {
+        Objects.requireNonNull(textList, "textList must not be null");
         this.textList = textList;
     }
 
@@ -29,7 +30,7 @@ public class ListSection extends AbstractSection {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ListSection that = (ListSection) o;
-        return Objects.equals(textList, that.textList);
+        return textList.equals(that.textList);
     }
 
     @Override

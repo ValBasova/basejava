@@ -1,8 +1,6 @@
 package ru.javawebinar.basejava.model;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Initial resume class
@@ -20,6 +18,8 @@ public class Resume {
 
     public Resume(String uuid,
                   String fullName) {
+        Objects.requireNonNull(uuid, "uuid must not be null");
+        Objects.requireNonNull(fullName, "fullName must not be null");
         this.uuid = uuid;
         this.fullName = fullName;
         contacts = new HashMap<>();
@@ -58,19 +58,24 @@ public class Resume {
         return sections;
     }
 
+    public <T extends AbstractSection> T getSection(SectionType type) {
+        return (T) sections.get(type);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Resume resume = (Resume) o;
-
-        return uuid.equals(resume.uuid);
+        return Objects.equals(uuid, resume.uuid) &&
+                Objects.equals(fullName, resume.fullName) &&
+                Objects.equals(contacts, resume.contacts) &&
+                Objects.equals(sections, resume.sections);
     }
 
     @Override
     public int hashCode() {
-        return uuid.hashCode();
+        return Objects.hash(uuid, fullName, contacts, sections);
     }
 
     @Override
@@ -81,9 +86,5 @@ public class Resume {
                 "contacts = " + contacts + "," + "\n" +
                 "sections = " + sections + "\n" +
                 '}';
-    }
-
-    public <T extends AbstractSection> T getSection(SectionType type) {
-        return (T) sections.get(type);
     }
 }

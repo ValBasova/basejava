@@ -10,6 +10,7 @@ public class TextSection extends AbstractSection {
     }
 
     public void setText(String text) {
+        Objects.requireNonNull(text, "text must not be null");
         this.text = text;
     }
 
@@ -23,7 +24,7 @@ public class TextSection extends AbstractSection {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TextSection that = (TextSection) o;
-        return Objects.equals(text, that.text);
+        return text.equals(that.text);
     }
 
     @Override

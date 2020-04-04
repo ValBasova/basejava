@@ -39,16 +39,27 @@ public class ResumeTestData {
         ListSection qualificationSection = resume.getSection(SectionType.QUALIFICATIONS);
         qualificationSection.setTextList(qualifications);
 
-        Organization alkatel = new Organization("Alkatel",new URL("https://www.pega.com/products/pega-platform/robotic-automation"),
-                "1997-09", "2005-01", "Инженер по аппаратному и программному тестированию");
-        Organization siemens = new Organization("Siemens AG", new URL("https://new.siemens.com/ru/ru.html") ,"2007-03", "2008-06",
-                "Разработка информационной модели, проектирование интерфейсов, реализация" +
-                        " и отладка ПО на мобильной IN платформе Siemens @vantage (Java, Unix)");
-        ArrayList<Organization> organizations = new ArrayList<>();
-        organizations.add(alkatel);
-        organizations.add(siemens);
-        OrganizationSection organizationSection = resume.getSection(SectionType.EXPERIENCE);
-        organizationSection.setOrganizationList(organizations);
+        Organization alkatel = new Organization("Alkatel", new URL("https://www.pega.com/products/pega-platform/robotic-automation"));
+        alkatel.addPosition("1997-09", "2005-01", "Инженер по аппаратному и программному тестированию",
+                "Тестирование, отладка, внедрение ПО цифровой телефонной станции Alcatel 1000 S12 (CHILL, ASM)");
+
+        Organization siemens = new Organization("Siemens AG", new URL("https://new.siemens.com/ru/ru.html"));
+        siemens.addPosition("2005-01", "2007-02", "Разработчик ПО", "Разработка информационной" +
+                " модели, проектирование интерфейсов, реализация и отладка ПО на мобильной IN платформе Siemens @vantage (Java, Unix)");
+
+        ArrayList<Organization> workList = new ArrayList<>();
+        workList.add(alkatel);
+        workList.add(siemens);
+        OrganizationSection experienceSection = resume.getSection(SectionType.EXPERIENCE);
+        experienceSection.setOrganizationList(workList);
+
+        Organization alkatel2 = new Organization("Alkatel", new URL("https://www.pega.com/products/pega-platform/robotic-automation"));
+        alkatel2.addPosition("1997-09", "1998-03", null, "6 месяцев обучения цифровым телефонным сетям (Москва)");
+
+        ArrayList<Organization> studyList = new ArrayList<>();
+        studyList.add(alkatel2);
+        OrganizationSection educationSection = resume.getSection(SectionType.EDUCATION);
+        educationSection.setOrganizationList(studyList);
 
         System.out.println(resume);
     }
