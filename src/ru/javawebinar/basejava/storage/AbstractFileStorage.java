@@ -47,7 +47,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         try {
             doWrite(r, file);
         } catch (IOException e) {
-            new StorageException("IO error", file.getName(), e);
+            throw new StorageException("IO error", file.getName(), e);
         }
     }
 

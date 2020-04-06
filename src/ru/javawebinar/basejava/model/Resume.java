@@ -22,8 +22,8 @@ public class Resume {
         Objects.requireNonNull(fullName, "fullName must not be null");
         this.uuid = uuid;
         this.fullName = fullName;
-        contacts = new HashMap<>();
-        sections = new HashMap<>();
+        contacts = new EnumMap<>(ContactType.class);
+        sections = new EnumMap<>(SectionType.class);
         for (SectionType type : SectionType.values()) {
             switch (type) {
                 case PERSONAL:
