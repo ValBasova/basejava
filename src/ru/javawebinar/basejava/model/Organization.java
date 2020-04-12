@@ -1,12 +1,15 @@
 package ru.javawebinar.basejava.model;
 
+import java.io.Serializable;
 import java.net.URL;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Organization {
+public class Organization implements Serializable {
+    private static final long serialVertionUID = 1l;
+
     private String name;
     private URL url;
     private List<Position> positions;
@@ -18,7 +21,7 @@ public class Organization {
         positions = new ArrayList<>();
     }
 
-    private static class Position {
+    private static class Position implements Serializable{
         private YearMonth timeStart;
         private YearMonth timeEnd;
         private String title;

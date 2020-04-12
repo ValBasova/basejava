@@ -3,17 +3,19 @@ package ru.javawebinar.basejava.storage;
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractFileStorage extends AbstractStorage<File> {
+public class AbstractFileStorage extends AbstractStorage<File> {
     private File directory;
 
-    protected AbstractFileStorage(File directory) {
+    private Serializator serializator;
+
+    protected AbstractFileStorage(File directory, Serializator serializator) {
         Objects.requireNonNull(directory, "directory must not be null");
+        Objects.requireNonNull(serializator, "serializator must not be null");
         if (!directory.isDirectory()) {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not directory");
         }
@@ -21,14 +23,16 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not readable/writable");
         }
         this.directory = directory;
+        this.serializator = serializator;
     }
 
     @Override
     public void clear() {
         File[] files = directory.listFiles();
-        assert files != null;
-        for (File file: files) {
-            file.delete();
+        if (files != null) {
+            for (File file : files) {
+                removeElement(file);
+            }
         }
     }
 
@@ -45,9 +49,9 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected void updateElement(Resume r, File file) {
         try {
-            doWrite(r, file);
+            serializator.doWrite(r, new BufferedOutputStream(new FileOutputStream(file)));
         } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
+            throw new StorageException("File write error", file.getName(), e);
         }
     }
 
@@ -60,24 +64,27 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     protected void insertElement(Resume r, File file) {
         try {
             file.createNewFile();
-            doWrite(r, file);
+            serializator.doWrite(r, new BufferedOutputStream(new FileOutputStream(file)));
         } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
+            throw new StorageException("Couldn't create file " + file.getAbsolutePath(), file.getName(), e);
         }
     }
 
     @Override
     protected Resume getElement(File file) {
         try {
-            return doRead(file);
+            return serializator.doRead(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
+            throw new StorageException("File read error", file.getName(), e);
         }
     }
 
     @Override
     protected void removeElement(File file) {
-        file.delete();
+        if (!file.delete()) {
+            throw new StorageException("File delete error", file.getName());
+        }
+
     }
 
     @Override
@@ -85,19 +92,15 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         File[] files = directory.listFiles();
         List<Resume> list = new ArrayList<>();
         assert files != null;
-        for (File file: files) {
-            Resume r = null;
+        for (File file : files) {
+            Resume r;
             try {
-                r = doRead(file);
+                r = serializator.doRead(new BufferedInputStream(new FileInputStream(file)));
             } catch (IOException e) {
-                throw new StorageException("IO error", file.getName(), e);
+                throw new StorageException("Directory read error", file.getName(), e);
             }
             list.add(r);
         }
         return list;
     }
-
-    protected abstract void doWrite(Resume r, File file) throws IOException;
-
-    protected abstract Resume doRead(File file) throws IOException;
 }

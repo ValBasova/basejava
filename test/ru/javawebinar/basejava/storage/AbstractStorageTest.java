@@ -7,10 +7,13 @@ import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
 public abstract class AbstractStorageTest {
+    protected static final File STORAGE_DIR = new File("C:\\Users\\Valery\\Desktop\\basejava\\storage");
+
     protected Storage storage;
 
     private static final String UUID_1 = "uuid1";
@@ -57,7 +60,7 @@ public abstract class AbstractStorageTest {
     public void update() throws Exception {
         Resume resume = new Resume(UUID_1, "dummy");
         storage.update(resume);
-        Assert.assertSame(resume, storage.get(UUID_1));
+        Assert.assertTrue(resume.equals(storage.get(UUID_1)));
     }
 
     @Test(expected = NotExistStorageException.class)

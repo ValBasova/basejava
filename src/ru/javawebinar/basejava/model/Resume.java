@@ -1,11 +1,13 @@
 package ru.javawebinar.basejava.model;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Initial resume class
  */
-public class Resume {
+public class Resume implements Serializable {
+    private static final long serialVertionUID = 1l;
 
     private final String uuid;
     private String fullName;
@@ -68,9 +70,9 @@ public class Resume {
         if (o == null || getClass() != o.getClass()) return false;
         Resume resume = (Resume) o;
         return Objects.equals(uuid, resume.uuid) &&
-                Objects.equals(fullName, resume.fullName) &&
-                Objects.equals(contacts, resume.contacts) &&
-                Objects.equals(sections, resume.sections);
+                Objects.equals(fullName, resume.fullName);
+         //       Objects.equals(contacts, resume.contacts) &&
+         //       Objects.equals(sections, resume.sections);
     }
 
     @Override
