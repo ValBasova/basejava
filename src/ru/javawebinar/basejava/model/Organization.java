@@ -21,6 +21,12 @@ public class Organization implements Serializable {
         positions = new ArrayList<>();
     }
 
+    public Organization(String name) {
+        Objects.requireNonNull(name, "name must not be null");
+        this.name = name;
+        positions = new ArrayList<>();
+    }
+
     private static class Position implements Serializable{
         private YearMonth timeStart;
         private YearMonth timeEnd;
@@ -50,6 +56,22 @@ public class Organization implements Serializable {
                     ", description='" + description + '\'' +
                     '}';
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Position position = (Position) o;
+            return Objects.equals(timeStart, position.timeStart) &&
+                    Objects.equals(timeEnd, position.timeEnd) &&
+                    Objects.equals(title, position.title) &&
+                    Objects.equals(description, position.description);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(timeStart, timeEnd, title, description);
+        }
     }
 
     public void addPosition(String timeStart, String timeEnd, String title, String description) {
@@ -70,9 +92,9 @@ public class Organization implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Organization that = (Organization) o;
-        return name.equals(that.name) &&
+        return Objects.equals(name, that.name) &&
                 Objects.equals(url, that.url) &&
-                positions.equals(that.positions);
+                Objects.equals(positions, that.positions);
     }
 
     @Override

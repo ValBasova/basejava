@@ -2,18 +2,19 @@ package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.storage.serializator.Serializator;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class AbstractFileStorage extends AbstractStorage<File> {
+public class FileStorage extends AbstractStorage<File> {
     private File directory;
 
     private Serializator serializator;
 
-    protected AbstractFileStorage(File directory, Serializator serializator) {
+    protected FileStorage(File directory, Serializator serializator) {
         Objects.requireNonNull(directory, "directory must not be null");
         Objects.requireNonNull(serializator, "serializator must not be null");
         if (!directory.isDirectory()) {
@@ -33,12 +34,18 @@ public class AbstractFileStorage extends AbstractStorage<File> {
             for (File file : files) {
                 removeElement(file);
             }
+        } else {
+            throw new StorageException("Directory null error");
         }
     }
 
     @Override
     public int size() {
-        return Objects.requireNonNull(directory.listFiles()).length;
+        File[] files = directory.listFiles();
+        if (files == null) {
+            throw new StorageException("Directory null error");
+        }
+        return files.length;
     }
 
     @Override
@@ -64,7 +71,7 @@ public class AbstractFileStorage extends AbstractStorage<File> {
     protected void insertElement(Resume r, File file) {
         try {
             file.createNewFile();
-            serializator.doWrite(r, new BufferedOutputStream(new FileOutputStream(file)));
+            updateElement(r, file);
         } catch (IOException e) {
             throw new StorageException("Couldn't create file " + file.getAbsolutePath(), file.getName(), e);
         }
@@ -90,16 +97,12 @@ public class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected List<Resume> getListResume() {
         File[] files = directory.listFiles();
+        if (files == null) {
+            throw new StorageException("Directory null error");
+        }
         List<Resume> list = new ArrayList<>();
-        assert files != null;
         for (File file : files) {
-            Resume r;
-            try {
-                r = serializator.doRead(new BufferedInputStream(new FileInputStream(file)));
-            } catch (IOException e) {
-                throw new StorageException("Directory read error", file.getName(), e);
-            }
-            list.add(r);
+            list.add(getElement(file));
         }
         return list;
     }

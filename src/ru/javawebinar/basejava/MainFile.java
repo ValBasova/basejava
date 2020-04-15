@@ -3,32 +3,26 @@ package ru.javawebinar.basejava;
 import java.io.File;
 
 public class MainFile {
-    static int counter = 0;
 
     public static void main(String[] args) {
-        printDirectory("./src");
+        printDirectory("./src", new StringBuilder());
     }
 
-    public static void printDirectory(String name) {
+    public static void printDirectory(String name, StringBuilder s) {
         File dir = new File(name);
         File[] list = dir.listFiles();
         if (list != null) {
             for (File file : list) {
                 if (!(file.isDirectory())) {
-                    for (int i = 0; i < counter; i++) {
-                        System.out.print('\t');
-                    }
-                    System.out.println(file.getName());
+                    System.out.println(s + file.getName());
                 } else {
-                    for (int i = 0; i < counter; i++) {
-                        System.out.print('\t');
-                    }
-                    System.out.println(file.getName());
-                    counter++;
-                    printDirectory(file.getAbsolutePath());
+                    System.out.println(s + file.getName());
+                    printDirectory(file.getAbsolutePath(), s.append("...."));
                 }
             }
-            counter--;
+            if (s.length() >= 3) {
+                s.delete(0, 4);
+            }
         } else {
             System.out.println("список пуст");
         }

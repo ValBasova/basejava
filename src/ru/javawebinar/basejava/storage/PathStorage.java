@@ -2,6 +2,7 @@ package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.storage.serializator.Serializator;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -12,11 +13,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class AbstractPathStorage extends AbstractStorage<Path> {
+public class PathStorage extends AbstractStorage<Path> {
     private Path directory;
     private Serializator serializator;
 
-    protected AbstractPathStorage(String dir, Serializator serializator) {
+    protected PathStorage(String dir, Serializator serializator) {
         directory = Paths.get(dir);
         Objects.requireNonNull(directory, "directory must not be null");
         Objects.requireNonNull(serializator, "serializator must not be null");
@@ -38,7 +39,7 @@ public class AbstractPathStorage extends AbstractStorage<Path> {
     @Override
     public int size() {
         try {
-            return Files.list(directory).toArray().length;
+            return (int) Files.list(directory).count();
         } catch (IOException e) {
             throw new StorageException("Directory read error", e);
         }
@@ -60,16 +61,16 @@ public class AbstractPathStorage extends AbstractStorage<Path> {
 
     @Override
     protected boolean isElementExist(Path path) {
-        return !Files.notExists(path);
+        return Files.exists(path);
     }
 
     @Override
     protected void insertElement(Resume r, Path path) {
         try {
             Files.createFile(path);
-            serializator.doWrite(r, new BufferedOutputStream(Files.newOutputStream(path)));
+            updateElement(r, path);
         } catch (IOException e) {
-            throw new StorageException("Path write error", r.getUuid(), e);
+            throw new StorageException("Couldn't create file " + path.toAbsolutePath(), path.getFileName().toString(),  e);
         }
     }
 

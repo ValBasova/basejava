@@ -32,7 +32,7 @@ public class ListSection extends AbstractSection {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ListSection that = (ListSection) o;
-        return textList.equals(that.textList);
+        return Objects.equals(textList, that.textList);
     }
 
     @Override
