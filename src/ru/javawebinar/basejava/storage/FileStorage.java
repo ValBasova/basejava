@@ -29,23 +29,15 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     public void clear() {
-        File[] files = directory.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                removeElement(file);
-            }
-        } else {
-            throw new StorageException("Directory null error");
+        File[] files = getFileList();
+        for (File file : files) {
+            removeElement(file);
         }
     }
 
     @Override
     public int size() {
-        File[] files = directory.listFiles();
-        if (files == null) {
-            throw new StorageException("Directory null error");
-        }
-        return files.length;
+        return getFileList().length;
     }
 
     @Override
@@ -91,19 +83,23 @@ public class FileStorage extends AbstractStorage<File> {
         if (!file.delete()) {
             throw new StorageException("File delete error", file.getName());
         }
-
     }
 
     @Override
     protected List<Resume> getListResume() {
-        File[] files = directory.listFiles();
-        if (files == null) {
-            throw new StorageException("Directory null error");
-        }
+        File[] files = getFileList();
         List<Resume> list = new ArrayList<>();
         for (File file : files) {
             list.add(getElement(file));
         }
         return list;
+    }
+
+    private File[] getFileList() {
+        File[] files = directory.listFiles();
+        if (files == null) {
+            throw new StorageException("Directory null error");
+        }
+        return files;
     }
 }

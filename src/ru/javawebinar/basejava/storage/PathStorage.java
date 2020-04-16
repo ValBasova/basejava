@@ -4,14 +4,16 @@ import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 import ru.javawebinar.basejava.storage.serializator.Serializator;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PathStorage extends AbstractStorage<Path> {
     private Path directory;
@@ -29,20 +31,12 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     public void clear() {
-        try {
-            Files.list(directory).forEach(this::removeElement);
-        } catch (IOException e) {
-            throw new StorageException("Path delete error", e);
-        }
+        getStreamList().forEach(this::removeElement);
     }
 
     @Override
     public int size() {
-        try {
-            return (int) Files.list(directory).count();
-        } catch (IOException e) {
-            throw new StorageException("Directory read error", e);
-        }
+        return (int) getStreamList().count();
     }
 
     @Override
@@ -70,7 +64,7 @@ public class PathStorage extends AbstractStorage<Path> {
             Files.createFile(path);
             updateElement(r, path);
         } catch (IOException e) {
-            throw new StorageException("Couldn't create file " + path.toAbsolutePath(), path.getFileName().toString(),  e);
+            throw new StorageException("Couldn't create file " + path.toAbsolutePath(), path.getFileName().toString(), e);
         }
     }
 
@@ -94,15 +88,14 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected List<Resume> getListResume() {
-        List<Resume> list = new ArrayList<>();
+        return getStreamList().map(this::getElement).collect(Collectors.toList());
+    }
+
+    private Stream<Path> getStreamList() {
         try {
-            List<Path> paths = Files.list(directory).collect(Collectors.toList());
-            for (Path path : paths) {
-                list.add(getElement(path));
-            }
+            return Files.list(directory);
         } catch (IOException e) {
             throw new StorageException("Directory read error", e);
         }
-        return list;
     }
 }
