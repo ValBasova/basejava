@@ -19,9 +19,10 @@ public enum ContactType {
         return title;
     }
 
-    @Override
-    public String toString() {
-        return title + " ";
-    }
+//    @Override
+//    public String toString() {
+//        return title;
+//    }
+
 }
 

@@ -1,5 +1,10 @@
 package ru.javawebinar.basejava.model;
 
+import ru.javawebinar.basejava.util.YearMonthAdapter;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.net.URL;
 import java.time.YearMonth;
@@ -7,12 +12,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable {
     private static final long serialVertionUID = 1l;
 
     private String name;
     private URL url;
     private List<Position> positions;
+
+    public Organization() {
+    }
 
     public Organization(String name, URL url) {
         Objects.requireNonNull(name, "name must not be null");
@@ -27,11 +36,17 @@ public class Organization implements Serializable {
         positions = new ArrayList<>();
     }
 
-    private static class Position implements Serializable{
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class Position implements Serializable {
+        @XmlJavaTypeAdapter(YearMonthAdapter.class)
         private YearMonth timeStart;
+        @XmlJavaTypeAdapter(YearMonthAdapter.class)
         private YearMonth timeEnd;
         private String title;
         private String description;
+
+        public Position(){
+        }
 
         public Position(String timeStart, String timeEnd, String title, String description) {
             Objects.requireNonNull(timeStart, "timeStart must not be null");
