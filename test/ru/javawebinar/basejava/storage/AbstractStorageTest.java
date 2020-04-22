@@ -27,14 +27,16 @@ public abstract class AbstractStorageTest {
     private static final Resume R3 = new Resume(UUID_3, "Name3");
     private static final Resume R4 = new Resume(UUID_4, "Name4");
 
-
     static {
+        R1.getContacts().put(ContactType.EMAIL, "abcdef@gmail.com");
+        R1.getContacts().put(ContactType.PHONE_NUMBER, "123456");
+
         TextSection ps_1 = R1.getSection(SectionType.PERSONAL);
         ps_1.setText("Personal_1)");
         TextSection os_1 = R1.getSection(SectionType.OBJECTIVE);
         os_1.setText("Objective_1");
         ListSection as_1 = R1.getSection(SectionType.ACHIEVEMENT);
-        as_1.setTextList(Arrays.asList("Achievement_1"));
+        as_1.setTextList(Arrays.asList("Achievement_0_1", "Achievement 0_2"));
         ListSection qs_1 = R1.getSection(SectionType.QUALIFICATIONS);
         qs_1.setTextList(Arrays.asList("Qualigications_1"));
         Organization org_1_1 = new Organization("Org_1");

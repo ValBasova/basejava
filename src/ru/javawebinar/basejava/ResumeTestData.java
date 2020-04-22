@@ -3,7 +3,6 @@ package ru.javawebinar.basejava;
 import ru.javawebinar.basejava.model.*;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Arrays;
 
 public class ResumeTestData {
@@ -29,18 +28,18 @@ public class ResumeTestData {
         qualificationSection.setTextList(Arrays.asList("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty",
                 "Version control: Subversion, Git, Mercury, ClearCase, Perforce"));
 
-        Organization alcatel = new Organization("Alcatel", new URL("https://www.pega.com/products/pega-platform/robotic-automation"));
+        Organization alcatel = new Organization("Alcatel", "https://www.pega.com/products/pega-platform/robotic-automation");
         alcatel.addPosition("1997-09", "2005-01", "Инженер по аппаратному и программному тестированию",
                 "Тестирование, отладка, внедрение ПО цифровой телефонной станции Alcatel 1000 S12 (CHILL, ASM)");
 
-        Organization siemens = new Organization("Siemens AG", new URL("https://new.siemens.com/ru/ru.html"));
+        Organization siemens = new Organization("Siemens AG", "https://new.siemens.com/ru/ru.html");
         siemens.addPosition("2005-01", "2007-02", "Разработчик ПО", "Разработка информационной" +
                 " модели, проектирование интерфейсов, реализация и отладка ПО на мобильной IN платформе Siemens @vantage (Java, Unix)");
 
         OrganizationSection experienceSection = resume.getSection(SectionType.EXPERIENCE);
         experienceSection.setOrganizationList(Arrays.asList(alcatel,siemens));
 
-        Organization alcatel2 = new Organization("Alcatel", new URL("https://www.pega.com/products/pega-platform/robotic-automation"));
+        Organization alcatel2 = new Organization("Alcatel", "https://www.pega.com/products/pega-platform/robotic-automation");
         alcatel2.addPosition("1997-09", "1998-03", null, "6 месяцев обучения цифровым телефонным сетям (Москва)");
 
         OrganizationSection educationSection = resume.getSection(SectionType.EDUCATION);

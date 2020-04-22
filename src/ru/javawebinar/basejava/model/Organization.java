@@ -6,7 +6,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
-import java.net.URL;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,23 +16,37 @@ public class Organization implements Serializable {
     private static final long serialVertionUID = 1l;
 
     private String name;
-    private URL url;
+    private String url;
     private List<Position> positions;
 
     public Organization() {
     }
 
-    public Organization(String name, URL url) {
-        Objects.requireNonNull(name, "name must not be null");
-        this.name = name;
-        this.url = url;
-        positions = new ArrayList<>();
+    public Organization(String name, String url) {
+        this(name, null, new ArrayList<Position>());
     }
 
     public Organization(String name) {
+        this(name, null);
+    }
+
+    public Organization(String name, String url, List list){
         Objects.requireNonNull(name, "name must not be null");
         this.name = name;
-        positions = new ArrayList<>();
+        this.url = url == null ? " " : url;
+        positions = list;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<Position> getPositions() {
+        return positions;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -60,6 +73,22 @@ public class Organization implements Serializable {
             this.description = description;
             this.timeStart = YearMonth.parse(timeStart);
             this.timeEnd = YearMonth.parse(timeEnd);
+        }
+
+        public YearMonth getTimeStart() {
+            return timeStart;
+        }
+
+        public YearMonth getTimeEnd() {
+            return timeEnd;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public String getDescription() {
+            return description;
         }
 
         @Override
@@ -91,6 +120,10 @@ public class Organization implements Serializable {
 
     public void addPosition(String timeStart, String timeEnd, String title, String description) {
         positions.add(new Position(timeStart, timeEnd, title, description));
+    }
+
+    public void addPosition(Position position) {
+        positions.add(position);
     }
 
     @Override

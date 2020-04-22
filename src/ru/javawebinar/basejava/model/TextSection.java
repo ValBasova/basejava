@@ -8,6 +8,7 @@ public class TextSection extends AbstractSection {
     private String text;
 
     public TextSection() {
+        this.text = "";
     }
 
     public String getText() {
