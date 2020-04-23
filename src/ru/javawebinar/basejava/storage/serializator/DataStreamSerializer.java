@@ -16,89 +16,61 @@ public class DataStreamSerializer implements Serializator {
             dos.writeUTF(r.getUuid());
             dos.writeUTF(r.getFullName());
             Map<ContactType, String> contacts = r.getContacts();
-            writeCollection(contacts.entrySet(), dos, new MapWriter(), r);
+            writeCollection(contacts.entrySet(), dos, entry -> {
+                ContactType contactType = entry.getKey();
+                dos.writeUTF(contactType.name());
+                dos.writeUTF(entry.getValue());
+            });
 
             Map<SectionType, AbstractSection> sections = r.getSections();
-            writeCollection(sections.entrySet(), dos, new MapWriter(), r);
+            writeCollection(sections.entrySet(), dos, entry -> {
+                SectionType sectionType = entry.getKey();
+                dos.writeUTF(sectionType.name());
+                switch (sectionType) {
+                    case PERSONAL:
+                    case OBJECTIVE:
+                        TextSection ts = r.getSection(sectionType);
+                        dos.writeUTF(ts.getText());
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        ListSection ls = r.getSection(sectionType);
+                        List<String> list = ls.getTextList();
+                        writeCollection(list, dos, dos::writeUTF);
+                        break;
+                    case EDUCATION:
+                    case EXPERIENCE:
+                        OrganizationSection orgs = r.getSection(sectionType);
+                        List<Organization> orgList = orgs.getOrganizationList();
+                        writeCollection(orgList, dos, org -> {
+                            dos.writeUTF(org.getName());
+                            dos.writeUTF(org.getUrl());
+                            List<Organization.Position> positions = org.getPositions();
+                            writeCollection(positions, dos, position -> {
+                                        dos.writeUTF(position.getTimeStart().toString());
+                                        dos.writeUTF(position.getTimeEnd().toString());
+                                        dos.writeUTF(position.getTitle());
+                                        dos.writeUTF(position.getDescription());
+                                    }
+                            );
+                        });
+                        break;
+                }
+            });
         }
     }
 
     private <T> void writeCollection(Collection<T> collection, DataOutputStream dos,
-                                     Writer writer, Resume r) throws IOException {
+                                     Writer<T> writer) throws IOException {
         dos.writeInt(collection.size());
         for (T el : collection) {
-            writer.writeElement(el, dos, r);
+            writer.writeElement(el);
         }
     }
 
     private interface Writer<T> {
-        void writeElement(T t, DataOutputStream dos, Resume r) throws IOException;
+        void writeElement(T t) throws IOException;
     }
-
-    private static class StringWriter implements Writer<String> {
-        @Override
-        public void writeElement(String s, DataOutputStream dos, Resume r) throws IOException {
-            dos.writeUTF(s);
-        }
-    }
-
-    private class OrganizatonWriter implements Writer<Organization> {
-        @Override
-        public void writeElement(Organization org, DataOutputStream dos, Resume r) throws IOException {
-            dos.writeUTF(org.getName());
-            dos.writeUTF(org.getUrl());
-            List<Organization.Position> positions = org.getPositions();
-            writeCollection(positions, dos, new PositionWriter(), r);
-        }
-    }
-
-    private static class PositionWriter implements Writer<Organization.Position> {
-        @Override
-        public void writeElement(Organization.Position pos, DataOutputStream dos, Resume r) throws IOException {
-            dos.writeUTF(pos.getTimeStart().toString());
-            dos.writeUTF(pos.getTimeEnd().toString());
-            dos.writeUTF(pos.getTitle());
-            dos.writeUTF(pos.getDescription());
-        }
-    }
-
-    private class MapWriter implements Writer<Map.Entry> {
-        @Override
-        public void writeElement(Map.Entry entry, DataOutputStream dos, Resume r) throws IOException {
-            if (entry.getKey() instanceof ContactType) {
-                ContactType contactType = (ContactType) entry.getKey();
-                dos.writeUTF(contactType.name());
-                dos.writeUTF(entry.getValue().toString());
-            } else if (entry.getKey() instanceof SectionType) {
-                SectionType sectionType = (SectionType) entry.getKey();
-                dos.writeUTF(sectionType.name());
-                writeSectionValues(sectionType, dos, r);
-            }
-        }
-    }
-
-    private void writeSectionValues(SectionType type, DataOutputStream dos, Resume r) throws IOException {
-        switch (type) {
-            case PERSONAL:
-            case OBJECTIVE:
-                TextSection ts = r.getSection(type);
-                dos.writeUTF(ts.getText());
-                break;
-            case ACHIEVEMENT:
-            case QUALIFICATIONS:
-                ListSection ls = r.getSection(type);
-                List<String> list = ls.getTextList();
-                writeCollection(list, dos, new StringWriter(), r);
-                break;
-            case EDUCATION:
-            case EXPERIENCE:
-                OrganizationSection orgs = r.getSection(type);
-                List<Organization> orgList = orgs.getOrganizationList();
-                writeCollection(orgList, dos, new OrganizatonWriter(), r);
-                break;
-        }
-    }
-
 
     @Override
     public Resume doRead(InputStream is) throws IOException {
@@ -106,100 +78,62 @@ public class DataStreamSerializer implements Serializator {
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
-            readMap(dis, new ContactMapReader(), resume);
-            readMap(dis, new SectionMapReader(), resume);
+            readMap(dis, () -> {
+                resume.getContacts().put(ContactType.valueOf(dis.readUTF()), dis.readUTF());
+            });
+            readMap(dis, () -> {
+                SectionType type = SectionType.valueOf(dis.readUTF());
+                switch (type) {
+                    case PERSONAL:
+                    case OBJECTIVE:
+                        TextSection ts = resume.getSection(type);
+                        ts.setText(dis.readUTF());
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        ListSection ls = resume.getSection(type);
+                        ls.setTextList(readList(dis, dis::readUTF));
+                        break;
+                    case EDUCATION:
+                    case EXPERIENCE:
+                        OrganizationSection orgs = resume.getSection(type);
+                        orgs.setOrganizationList(readList(dis, () -> new Organization(
+                                dis.readUTF(),
+                                dis.readUTF(),
+                                readList(dis, () -> new Organization.Position(
+                                        dis.readUTF(),
+                                        dis.readUTF(),
+                                        dis.readUTF(),
+                                        dis.readUTF())))));
+                        break;
+                }
+            });
             return resume;
         }
     }
 
-    private <T> List<T> readCollection(DataInputStream dis, Reader<T> reader, Resume r) throws IOException {
+    private <T> List<T> readList(DataInputStream dis, ListReader<T> reader) throws IOException {
         int size = dis.readInt();
         List<T> list = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            list.add(reader.readElement(dis, r));
+            list.add(reader.readElement());
         }
         return list;
     }
 
-    private interface Reader<T> {
-        <T> T readElement(DataInputStream dis, Resume r) throws IOException;
-    }
-
-    private class ListReader implements Reader<String> {
-        @Override
-        public String readElement(DataInputStream dis, Resume r) throws IOException {
-            return dis.readUTF();
-        }
-    }
-
-    private class OrganizatonReader implements Reader<Organization> {
-        @Override
-        public Organization readElement(DataInputStream dis, Resume r) throws IOException {
-            String orgName = dis.readUTF();
-            String url = dis.readUTF();
-            List positions = readCollection(dis, new PositionReader(), r);
-            Organization org = new Organization(orgName, url, positions);
-            return org;
-        }
-    }
-
-    private class PositionReader implements Reader<Organization.Position> {
-        @Override
-        public Organization.Position readElement(DataInputStream dis, Resume r) throws IOException {
-            String timeStart = dis.readUTF();
-            String timeEnd = dis.readUTF();
-            String title = dis.readUTF();
-            String description = dis.readUTF();
-            return new Organization.Position(timeStart, timeEnd, title, description);
-        }
-    }
-
-    private void readMap(DataInputStream dis, MapReader reader, Resume r) throws IOException {
+    private <T> void readMap(DataInputStream dis, MapReader reader) throws IOException {
         int size = dis.readInt();
         for (int i = 0; i < size; i++) {
-            reader.readMapElement(dis, r);
+            reader.read();
         }
     }
 
     private interface MapReader {
-        void readMapElement(DataInputStream dis, Resume r) throws IOException;
+        void read() throws IOException;
     }
 
-    private class ContactMapReader implements MapReader {
-        @Override
-        public void readMapElement(DataInputStream dis, Resume r) throws IOException {
-            r.getContacts().put(ContactType.valueOf(dis.readUTF()), dis.readUTF());
-        }
-    }
+    private interface ListReader<T> {
+        T readElement() throws IOException;
 
-    private class SectionMapReader implements MapReader {
-        @Override
-        public void readMapElement(DataInputStream dis, Resume r) throws IOException {
-            SectionType type = SectionType.valueOf(dis.readUTF());
-            readSectionValues(type, dis, r);
-        }
-    }
-
-    private void readSectionValues(SectionType type, DataInputStream dis, Resume r) throws IOException {
-        switch (type) {
-            case PERSONAL:
-            case OBJECTIVE:
-                TextSection ts = r.getSection(type);
-                ts.setText(dis.readUTF());
-                r.getSections().put(type, ts);
-                break;
-            case ACHIEVEMENT:
-            case QUALIFICATIONS:
-                ListSection ls = r.getSection(type);
-                ls.setTextList(readCollection(dis, new ListReader(), r));
-                r.getSections().put(type, ls);
-                break;
-            case EDUCATION:
-            case EXPERIENCE:
-                OrganizationSection orgs = r.getSection(type);
-                orgs.setOrganizationList(readCollection(dis, new OrganizatonReader(), r));
-                r.getSections().put(type, orgs);
-                break;
-        }
     }
 }

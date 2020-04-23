@@ -23,14 +23,14 @@ public class Organization implements Serializable {
     }
 
     public Organization(String name, String url) {
-        this(name, null, new ArrayList<Position>());
+        this(name, url, new ArrayList<Position>());
     }
 
     public Organization(String name) {
         this(name, null);
     }
 
-    public Organization(String name, String url, List list){
+    public Organization(String name, String url, List<Position> list){
         Objects.requireNonNull(name, "name must not be null");
         this.name = name;
         this.url = url == null ? " " : url;
