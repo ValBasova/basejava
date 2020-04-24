@@ -61,7 +61,7 @@ public class Organization implements Serializable {
         public Position(){
         }
 
-        public Position(String timeStart, String timeEnd, String title, String description) {
+        public Position(YearMonth timeStart, YearMonth timeEnd, String title, String description) {
             Objects.requireNonNull(timeStart, "timeStart must not be null");
             Objects.requireNonNull(timeEnd, "timeEnd must not be null");
             Objects.requireNonNull(description, "description must not be null");
@@ -71,8 +71,8 @@ public class Organization implements Serializable {
                 this.title = title;
             }
             this.description = description;
-            this.timeStart = YearMonth.parse(timeStart);
-            this.timeEnd = YearMonth.parse(timeEnd);
+            this.timeStart = timeStart;
+            this.timeEnd = timeEnd;
         }
 
         public YearMonth getTimeStart() {
@@ -119,7 +119,7 @@ public class Organization implements Serializable {
     }
 
     public void addPosition(String timeStart, String timeEnd, String title, String description) {
-        positions.add(new Position(timeStart, timeEnd, title, description));
+        positions.add(new Position(YearMonth.parse(timeStart),YearMonth.parse(timeEnd), title, description));
     }
 
     public void addPosition(Position position) {

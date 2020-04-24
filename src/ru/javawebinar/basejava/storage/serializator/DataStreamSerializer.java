@@ -3,6 +3,7 @@ package ru.javawebinar.basejava.storage.serializator;
 import ru.javawebinar.basejava.model.*;
 
 import java.io.*;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -101,8 +102,8 @@ public class DataStreamSerializer implements Serializator {
                                 dis.readUTF(),
                                 dis.readUTF(),
                                 readList(dis, () -> new Organization.Position(
-                                        dis.readUTF(),
-                                        dis.readUTF(),
+                                        YearMonth.parse(dis.readUTF()),
+                                        YearMonth.parse(dis.readUTF()),
                                         dis.readUTF(),
                                         dis.readUTF())))));
                         break;
