@@ -61,9 +61,9 @@ public class MainConcurrency {
 
             @Override
             public void run() {
-                synchronized(LOCK1) {
+                synchronized (LOCK1) {
                     try {
-                        LOCK1.wait();
+                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -79,12 +79,7 @@ public class MainConcurrency {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                synchronized(LOCK2) {
-                    try {
-                        LOCK2.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                synchronized (LOCK2) {
                     System.out.println("lock2 - thread1");
                     synchronized (LOCK1) {
                         System.out.println("lock1 - thread1");
