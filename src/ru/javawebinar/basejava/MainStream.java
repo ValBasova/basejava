@@ -3,6 +3,7 @@ package ru.javawebinar.basejava;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MainStream {
@@ -22,11 +23,9 @@ public class MainStream {
     }
 
     private static List<Integer> oddOrEven(List<Integer> integers) {
-        List<Integer> oddList = new ArrayList<>();
-        List<Integer> evenList = new ArrayList<>();
-        integers.stream().collect(Collectors.partitioningBy(x -> ((x % 2 == 0) ? evenList : oddList).add(x)));
-        //      integers.stream().map(x ->((x % 2 == 0) ? evenList : oddList).add(x)).collect(Collectors.toList());
-
-        return (oddList.size() % 2 != 0) ? oddList : evenList;
+        Map<Boolean, List<Integer>> map = integers.
+                stream().
+                collect(Collectors.partitioningBy(x -> (x % 2 == 0)));
+        return (map.get(false).size() % 2 != 0) ? map.get(false) : map.get(true);
     }
 }
