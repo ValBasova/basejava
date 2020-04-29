@@ -24,8 +24,8 @@ public class MainStream {
     private static List<Integer> oddOrEven(List<Integer> integers) {
         List<Integer> oddList = new ArrayList<>();
         List<Integer> evenList = new ArrayList<>();
-
-        integers.stream().map(x ->((x % 2 == 0) ? evenList : oddList).add(x)).collect(Collectors.toList());
+        integers.stream().collect(Collectors.partitioningBy(x -> ((x % 2 == 0) ? evenList : oddList).add(x)));
+        //      integers.stream().map(x ->((x % 2 == 0) ? evenList : oddList).add(x)).collect(Collectors.toList());
 
         return (oddList.size() % 2 != 0) ? oddList : evenList;
     }
