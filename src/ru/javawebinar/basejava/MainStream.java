@@ -26,6 +26,6 @@ public class MainStream {
         Map<Boolean, List<Integer>> map = integers.
                 stream().
                 collect(Collectors.partitioningBy(x -> (x % 2 == 0)));
-        return (map.get(false).size() % 2 != 0) ? map.get(false) : map.get(true);
+        return map.get(map.get(false).size() % 2 != 0);
     }
 }
