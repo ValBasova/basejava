@@ -27,78 +27,78 @@ public abstract class AbstractStorageTest {
     private static final Resume R3 = new Resume(UUID_3, "Name3");
     private static final Resume R4 = new Resume(UUID_4, "Name4");
 
-    static {
-        R1.getContacts().put(ContactType.EMAIL, "abcdef@gmail.com");
-        R1.getContacts().put(ContactType.PHONE_NUMBER, "123456");
-
-        TextSection ps_1 = R1.getSection(SectionType.PERSONAL);
-        ps_1.setText("Personal_1)");
-        TextSection os_1 = R1.getSection(SectionType.OBJECTIVE);
-        os_1.setText("Objective_1");
-        ListSection as_1 = R1.getSection(SectionType.ACHIEVEMENT);
-        as_1.setTextList(Arrays.asList("Achievement_0_1", "Achievement 0_2"));
-        ListSection qs_1 = R1.getSection(SectionType.QUALIFICATIONS);
-        qs_1.setTextList(Arrays.asList("Qualigications_1"));
-        Organization org_1_1 = new Organization("Org_1");
-        org_1_1.addPosition("2020-01", "2020-02", "Title_1", "Descriprion_1");
-        OrganizationSection es_1 = R1.getSection(SectionType.EXPERIENCE);
-        es_1.setOrganizationList(Arrays.asList(org_1_1));
-        Organization org_1_2 = new Organization("Org_2");
-        org_1_2.addPosition("2020-01", "2020-03", null, "Description_2");
-        OrganizationSection eds_1 = R1.getSection(SectionType.EDUCATION);
-        eds_1.setOrganizationList(Arrays.asList(org_1_2));
-
-        TextSection ps_2 = R2.getSection(SectionType.PERSONAL);
-        ps_2.setText("Personal_2)");
-        TextSection os_2 = R2.getSection(SectionType.OBJECTIVE);
-        os_2.setText("Objective_2");
-        ListSection as_2 = R2.getSection(SectionType.ACHIEVEMENT);
-        as_2.setTextList(Arrays.asList("Achievement_2"));
-        ListSection qs_2 = R2.getSection(SectionType.QUALIFICATIONS);
-        qs_2.setTextList(Arrays.asList("Qualigications_2"));
-        Organization org_2_1 = new Organization("Org_2");
-        org_2_1.addPosition("2020-01", "2020-02", "Title_2", "Descriprion_2");
-        OrganizationSection es_2 = R2.getSection(SectionType.EXPERIENCE);
-        es_2.setOrganizationList(Arrays.asList(org_2_1));
-        Organization org_2_2 = new Organization("Org_2_2");
-        org_2_2.addPosition("2020-01", "2020-03", null, "Description_2");
-        OrganizationSection eds_2 = R2.getSection(SectionType.EDUCATION);
-        eds_2.setOrganizationList(Arrays.asList(org_2_2));
-
-        TextSection ps_3 = R3.getSection(SectionType.PERSONAL);
-        ps_3.setText("Personal_3)");
-        TextSection os_3 = R3.getSection(SectionType.OBJECTIVE);
-        os_3.setText("Objective_3");
-        ListSection as_3 = R3.getSection(SectionType.ACHIEVEMENT);
-        as_3.setTextList(Arrays.asList("Achievement_3"));
-        ListSection qs_3 = R3.getSection(SectionType.QUALIFICATIONS);
-        qs_3.setTextList(Arrays.asList("Qualigications_3"));
-        Organization org_3_1 = new Organization("Org_3");
-        org_3_1.addPosition("2020-01", "2020-02", "Title_3", "Descriprion_3");
-        OrganizationSection es_3 = R3.getSection(SectionType.EXPERIENCE);
-        es_3.setOrganizationList(Arrays.asList(org_3_1));
-        Organization org_3_2 = new Organization("Org_3_2");
-        org_3_2.addPosition("2020-01", "2020-03", null, "Description_3");
-        OrganizationSection eds_3 = R3.getSection(SectionType.EDUCATION);
-        eds_3.setOrganizationList(Arrays.asList(org_3_2));
-
-        TextSection ps_4 = R4.getSection(SectionType.PERSONAL);
-        ps_4.setText("Personal_4)");
-        TextSection os_4 = R4.getSection(SectionType.OBJECTIVE);
-        os_4.setText("Objective_4");
-        ListSection as_4 = R4.getSection(SectionType.ACHIEVEMENT);
-        as_4.setTextList(Arrays.asList("Achievement_4"));
-        ListSection qs_4 = R4.getSection(SectionType.QUALIFICATIONS);
-        qs_4.setTextList(Arrays.asList("Qualigications_4"));
-        Organization org_4_1 = new Organization("Org_4");
-        org_4_1.addPosition("2020-01", "2020-02", "Title_4", "Descriprion_4");
-        OrganizationSection es_4 = R4.getSection(SectionType.EXPERIENCE);
-        es_4.setOrganizationList(Arrays.asList(org_4_1));
-        Organization org_4_2 = new Organization("Org_4_2");
-        org_4_2.addPosition("2020-01", "2020-03", null, "Description_4");
-        OrganizationSection eds_4 = R4.getSection(SectionType.EDUCATION);
-        eds_4.setOrganizationList(Arrays.asList(org_4_2));
-    }
+//    static {
+//        R1.getContacts().put(ContactType.EMAIL, "abcdef@gmail.com");
+//        R1.getContacts().put(ContactType.PHONE_NUMBER, "123456");
+//
+//        TextSection ps_1 = R1.getSection(SectionType.PERSONAL);
+//        ps_1.setText("Personal_1)");
+//        TextSection os_1 = R1.getSection(SectionType.OBJECTIVE);
+//        os_1.setText("Objective_1");
+//        ListSection as_1 = R1.getSection(SectionType.ACHIEVEMENT);
+//        as_1.setTextList(Arrays.asList("Achievement_0_1", "Achievement 0_2"));
+//        ListSection qs_1 = R1.getSection(SectionType.QUALIFICATIONS);
+//        qs_1.setTextList(Arrays.asList("Qualigications_1"));
+//        Organization org_1_1 = new Organization("Org_1");
+//        org_1_1.addPosition("2020-01", "2020-02", "Title_1", "Descriprion_1");
+//        OrganizationSection es_1 = R1.getSection(SectionType.EXPERIENCE);
+//        es_1.setOrganizationList(Arrays.asList(org_1_1));
+//        Organization org_1_2 = new Organization("Org_2");
+//        org_1_2.addPosition("2020-01", "2020-03", null, "Description_2");
+//        OrganizationSection eds_1 = R1.getSection(SectionType.EDUCATION);
+//        eds_1.setOrganizationList(Arrays.asList(org_1_2));
+//
+//        TextSection ps_2 = R2.getSection(SectionType.PERSONAL);
+//        ps_2.setText("Personal_2)");
+//        TextSection os_2 = R2.getSection(SectionType.OBJECTIVE);
+//        os_2.setText("Objective_2");
+//        ListSection as_2 = R2.getSection(SectionType.ACHIEVEMENT);
+//        as_2.setTextList(Arrays.asList("Achievement_2"));
+//        ListSection qs_2 = R2.getSection(SectionType.QUALIFICATIONS);
+//        qs_2.setTextList(Arrays.asList("Qualigications_2"));
+//        Organization org_2_1 = new Organization("Org_2");
+//        org_2_1.addPosition("2020-01", "2020-02", "Title_2", "Descriprion_2");
+//        OrganizationSection es_2 = R2.getSection(SectionType.EXPERIENCE);
+//        es_2.setOrganizationList(Arrays.asList(org_2_1));
+//        Organization org_2_2 = new Organization("Org_2_2");
+//        org_2_2.addPosition("2020-01", "2020-03", null, "Description_2");
+//        OrganizationSection eds_2 = R2.getSection(SectionType.EDUCATION);
+//        eds_2.setOrganizationList(Arrays.asList(org_2_2));
+//
+//        TextSection ps_3 = R3.getSection(SectionType.PERSONAL);
+//        ps_3.setText("Personal_3)");
+//        TextSection os_3 = R3.getSection(SectionType.OBJECTIVE);
+//        os_3.setText("Objective_3");
+//        ListSection as_3 = R3.getSection(SectionType.ACHIEVEMENT);
+//        as_3.setTextList(Arrays.asList("Achievement_3"));
+//        ListSection qs_3 = R3.getSection(SectionType.QUALIFICATIONS);
+//        qs_3.setTextList(Arrays.asList("Qualigications_3"));
+//        Organization org_3_1 = new Organization("Org_3");
+//        org_3_1.addPosition("2020-01", "2020-02", "Title_3", "Descriprion_3");
+//        OrganizationSection es_3 = R3.getSection(SectionType.EXPERIENCE);
+//        es_3.setOrganizationList(Arrays.asList(org_3_1));
+//        Organization org_3_2 = new Organization("Org_3_2");
+//        org_3_2.addPosition("2020-01", "2020-03", null, "Description_3");
+//        OrganizationSection eds_3 = R3.getSection(SectionType.EDUCATION);
+//        eds_3.setOrganizationList(Arrays.asList(org_3_2));
+//
+//        TextSection ps_4 = R4.getSection(SectionType.PERSONAL);
+//        ps_4.setText("Personal_4)");
+//        TextSection os_4 = R4.getSection(SectionType.OBJECTIVE);
+//        os_4.setText("Objective_4");
+//        ListSection as_4 = R4.getSection(SectionType.ACHIEVEMENT);
+//        as_4.setTextList(Arrays.asList("Achievement_4"));
+//        ListSection qs_4 = R4.getSection(SectionType.QUALIFICATIONS);
+//        qs_4.setTextList(Arrays.asList("Qualigications_4"));
+//        Organization org_4_1 = new Organization("Org_4");
+//        org_4_1.addPosition("2020-01", "2020-02", "Title_4", "Descriprion_4");
+//        OrganizationSection es_4 = R4.getSection(SectionType.EXPERIENCE);
+//        es_4.setOrganizationList(Arrays.asList(org_4_1));
+//        Organization org_4_2 = new Organization("Org_4_2");
+//        org_4_2.addPosition("2020-01", "2020-03", null, "Description_4");
+//        OrganizationSection eds_4 = R4.getSection(SectionType.EDUCATION);
+//        eds_4.setOrganizationList(Arrays.asList(org_4_2));
+//    }
 
     public AbstractStorageTest(Storage storage) {
         this.storage = storage;
