@@ -40,12 +40,7 @@ public class SqlStorage implements Storage {
                     }
                     Resume r = new Resume(uuid, rs.getString("full_name"));
                     do {
-                        String value = rs.getString("value");
-                        String type = rs.getString("type");
-                        if (type != null) {
-                            ContactType contactType = ContactType.valueOf(type);
-                            r.getContacts().put(contactType, value);
-                        }
+                        addContactResume(rs, r);
                     } while (rs.next());
                     return r;
                 });
@@ -65,22 +60,10 @@ public class SqlStorage implements Storage {
                         ps.setString(1, r.getUuid());
                         ps.execute();
                     }
-                    return sqlInsertContacts(r, conn);
+                    sqlInsertContacts(r, conn);
+                    return null;
                 }
         );
-    }
-
-    private Object sqlInsertContacts(Resume r, Connection conn) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("INSERT INTO contact (resume_uuid, type, value) VALUES (?,?,?)")) {
-            for (Map.Entry<ContactType, String> e : r.getContacts().entrySet()) {
-                ps.setString(1, r.getUuid());
-                ps.setString(2, e.getKey().name());
-                ps.setString(3, e.getValue());
-                ps.addBatch();
-            }
-            ps.executeBatch();
-        }
-        return null;
     }
 
     @Override
@@ -91,7 +74,8 @@ public class SqlStorage implements Storage {
                         ps.setString(2, r.getFullName());
                         ps.execute();
                     }
-                    return sqlInsertContacts(r, conn);
+                    sqlInsertContacts(r, conn);
+                    return null;
                 }
         );
     }
@@ -122,12 +106,7 @@ public class SqlStorage implements Storage {
                             resume = new Resume(rs.getString("uuid"), rs.getString("full_name"));
                             list.add(resume);
                         }
-                        String value = rs.getString("value");
-                        String type = rs.getString("type");
-                        if (type != null) {
-                            ContactType contactType = ContactType.valueOf(type);
-                            resume.getContacts().put(contactType, value);
-                        }
+                        addContactResume(rs, resume);
                     }
                     return list;
                 });
@@ -141,5 +120,26 @@ public class SqlStorage implements Storage {
                 return rs.getInt(1);
             return 0;
         });
+    }
+
+    private void sqlInsertContacts(Resume r, Connection conn) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("INSERT INTO contact (resume_uuid, type, value) VALUES (?,?,?)")) {
+            for (Map.Entry<ContactType, String> e : r.getContacts().entrySet()) {
+                ps.setString(1, r.getUuid());
+                ps.setString(2, e.getKey().name());
+                ps.setString(3, e.getValue());
+                ps.addBatch();
+            }
+            ps.executeBatch();
+        }
+    }
+
+    private void addContactResume(ResultSet rs, Resume r) throws SQLException {
+        String value = rs.getString("value");
+        String type = rs.getString("type");
+        if (type != null) {
+            ContactType contactType = ContactType.valueOf(type);
+            r.getContacts().put(contactType, value);
+        }
     }
 }
