@@ -167,11 +167,11 @@ public class SqlStorage implements Storage {
         try (PreparedStatement ps = conn.prepareStatement("INSERT INTO section (resume_uuid, type, value) VALUES (?,?,?)")) {
             for (Map.Entry<SectionType, AbstractSection> entry : r.getSections().entrySet()) {
                 SectionType sectionType = entry.getKey();
+                ps.setString(1, r.getUuid());
+                ps.setString(2, sectionType.name());
                 switch (sectionType) {
                     case PERSONAL:
                     case OBJECTIVE:
-                        ps.setString(1, r.getUuid());
-                        ps.setString(2, sectionType.name());
                         TextSection ts = r.getSection(sectionType);
                         ps.setString(3, ts.getText());
                         ps.addBatch();
@@ -181,8 +181,6 @@ public class SqlStorage implements Storage {
                         ListSection ls = r.getSection(sectionType);
                         List<String> list = ls.getTextList();
                         if (list.size() > 0) {
-                            ps.setString(1, r.getUuid());
-                            ps.setString(2, sectionType.name());
                             ps.setString(3, String.join("\n", list));
                             ps.addBatch();
                         }
