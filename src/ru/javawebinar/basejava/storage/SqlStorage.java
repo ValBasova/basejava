@@ -1,14 +1,21 @@
 package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.exception.NotExistStorageException;
-import ru.javawebinar.basejava.model.*;
+import ru.javawebinar.basejava.model.AbstractSection;
+import ru.javawebinar.basejava.model.ContactType;
+import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.model.SectionType;
 import ru.javawebinar.basejava.sql.SqlHelper;
+import ru.javawebinar.basejava.util.JsonParser;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SqlStorage implements Storage {
     public final SqlHelper sqlHelper;
@@ -165,29 +172,14 @@ public class SqlStorage implements Storage {
 
     private void sqlInsertSections(Resume r, Connection conn) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement("INSERT INTO section (resume_uuid, type, value) VALUES (?,?,?)")) {
-            for (Map.Entry<SectionType, AbstractSection> entry : r.getSections().entrySet()) {
-                SectionType sectionType = entry.getKey();
+            for (Map.Entry<SectionType, AbstractSection> e : r.getSections().entrySet()) {
                 ps.setString(1, r.getUuid());
-                ps.setString(2, sectionType.name());
-                switch (sectionType) {
-                    case PERSONAL:
-                    case OBJECTIVE:
-                        TextSection ts = r.getSection(sectionType);
-                        ps.setString(3, ts.getText());
-                        ps.addBatch();
-                        break;
-                    case ACHIEVEMENT:
-                    case QUALIFICATIONS:
-                        ListSection ls = r.getSection(sectionType);
-                        List<String> list = ls.getTextList();
-                        if (list.size() > 0) {
-                            ps.setString(3, String.join("\n", list));
-                            ps.addBatch();
-                        }
-                        break;
-                }
-                ps.executeBatch();
+                ps.setString(2, e.getKey().name());
+                AbstractSection section = e.getValue();
+                ps.setString(3, JsonParser.write(section, AbstractSection.class));
+                ps.addBatch();
             }
+            ps.executeBatch();
         }
     }
 
@@ -201,22 +193,10 @@ public class SqlStorage implements Storage {
     }
 
     private void addSectionResume(ResultSet rs, Resume r) throws SQLException {
-        String value = rs.getString("value");
-        String type = rs.getString("type");
-        if (type != null) {
-            SectionType sectionType = SectionType.valueOf(type);
-            switch (sectionType) {
-                case PERSONAL:
-                case OBJECTIVE:
-                    TextSection ts = r.getSection(sectionType);
-                    ts.setText(value);
-                    break;
-                case ACHIEVEMENT:
-                case QUALIFICATIONS:
-                    ListSection ls = r.getSection(sectionType);
-                    ls.setTextList(Arrays.asList(value.split("\n")));
-                    break;
-            }
+        String content = rs.getString("value");
+        if (content != null) {
+            SectionType type = SectionType.valueOf(rs.getString("type"));
+            r.getSections().put(type, JsonParser.read(content, AbstractSection.class));
         }
     }
 }

@@ -63,12 +63,20 @@ public class Resume implements Serializable {
         return fullName;
     }
 
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
     public Map<ContactType, String> getContacts() {
         return contacts;
     }
 
     public Map<SectionType, AbstractSection> getSections() {
         return sections;
+    }
+
+    public String getContact(ContactType type) {
+        return contacts.get(type);
     }
 
     public <T extends AbstractSection> T getSection(SectionType type) {
