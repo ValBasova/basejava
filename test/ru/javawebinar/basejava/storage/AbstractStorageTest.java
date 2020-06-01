@@ -41,14 +41,17 @@ public abstract class AbstractStorageTest {
         ListSection qs_1 = R1.getSection(SectionType.QUALIFICATIONS);
         qs_1.setTextList(Arrays.asList("Qualigications_1"));
 
-        Organization org_1_1 = new Organization("Org_1");
+        Organization org_1_1 = new Organization("Org_1", "https://new.siemens.com/ru/ru.html");
         org_1_1.addPosition("2020-01", "2020-02", "Title_1", "Descriprion_1");
+        org_1_1.addPosition("2020-09", "2020-12", "Title_2", "Descriprion_2");
         OrganizationSection es_1 = R1.getSection(SectionType.EXPERIENCE);
         es_1.setOrganizationList(Arrays.asList(org_1_1));
         Organization org_1_2 = new Organization("Org_2");
         org_1_2.addPosition("2020-01", "2020-03", null, "Description_2");
+        Organization org_1_3 = new Organization("Org_3");
+        org_1_3.addPosition("2020-03", "2020-04", "Title_3", "Descriprion_3");
         OrganizationSection eds_1 = R1.getSection(SectionType.EDUCATION);
-        eds_1.setOrganizationList(Arrays.asList(org_1_2));
+        eds_1.setOrganizationList(Arrays.asList(org_1_2, org_1_3));
 
         TextSection ps_2 = R2.getSection(SectionType.PERSONAL);
         ps_2.setText("Personal_2)");
