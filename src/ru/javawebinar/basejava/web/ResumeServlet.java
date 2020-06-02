@@ -11,14 +11,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ResumeServlet extends HttpServlet {
-    public Storage storage = new SqlStorage(Config.get().getDb_url(), Config.get().getDb_user(), Config.get().getDb_password());
+    public Storage storage;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+        storage = new SqlStorage(Config.get().getDb_url(), Config.get().getDb_user(), Config.get().getDb_password());
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
@@ -51,19 +53,28 @@ public class ResumeServlet extends HttpServlet {
                         break;
                     case EDUCATION:
                     case EXPERIENCE:
-//                        OrganizationSection orgs = r.getSection(type);
-//                        orgs.setOrganizationList(readList(dis, () -> new Organization(
-//                                dis.readUTF(),
-//                                dis.readUTF(),
-//                                readList(dis, () -> new Organization.Position(
-//                                        YearMonth.parse(dis.readUTF()),
-//                                        YearMonth.parse(dis.readUTF()),
-//                                        dis.readUTF(),
-//                                        dis.readUTF())))));
+                        OrganizationSection organizationSection = r.getSection(type);
+                        ArrayList<Organization> organizations = new ArrayList<>();
+                        String[] values = request.getParameterValues(type.name());
+                        for (int i = 0; i < values.length; i++) {
+                            String name = values[i];
+                            String url = request.getParameter(type.name() + i + "url");
+                            Organization organization = new Organization(name, url);
+                            String[] posValues = request.getParameterValues(type.name() + i + "description");
+                            for(int j = 0; j < posValues.length; j++) {
+                                String startDate = request.getParameter(type.name() + i + "startDate" + j);
+                                String endDate = request.getParameter(type.name() + i + "endDate" + j);
+                                String title = request.getParameter(type.name() + i + "title" + j);
+                                String description = posValues[j];
+                                organization.addPosition(startDate, endDate, title, description);
+                            }
+                            organizations.add(organization);
+                        }
+                       organizationSection.setOrganizationList(organizations);
                         break;
                 }
             } else {
-                r.getContacts().remove(type);
+                r.getSections().remove(type);
             }
         }
         storage.update(r);

@@ -50,29 +50,29 @@
                             </dl>
                             <dl>
                                 <dt>Сайт учереждения:</dt>
-                                <dd><input type="text" name='${type}url' size=100 value="${org.url}"></dd>
+                                <dd><input type="text" name='${type}${counter.index}url' size=100 value="${org.url}"></dd>
                                 </dd>
                             </dl>
                             <br>
                             <div style="margin-left: 30px">
-                                <c:forEach var="pos" items="${org.positions}">
+                                <c:forEach var="pos" items="${org.positions}" varStatus="posCounter">
                                     <jsp:useBean id="pos" type="ru.javawebinar.basejava.model.Organization.Position"/>
                                     <dl>
                                         <dt>Начальная дата:</dt>
                                         <dd>
-                                            <input type="text" name="${type}${counter.index}startDate" size=10
-                                                   value="<%=pos.getTimeStart().format(DateTimeFormatter.ofPattern("MM.yyyy"))%>" placeholder="MM/yyyy">
+                                            <input type="text" name="${type}${counter.index}startDate${posCounter.index}" size=10
+                                                   value="<%=pos.getTimeStart().format(DateTimeFormatter.ofPattern("uuuu-MM"))%>" placeholder="MM/yyyy">
                                         </dd>
                                     </dl>
                                     <dl>
                                         <dt>Конечная дата:</dt>
                                         <dd>
-                                            <input type="text" name="${type}${counter.index}endDate" size=10
-                                                   value="<%=pos.getTimeEnd().format(DateTimeFormatter.ofPattern("MM.yyyy"))%>" placeholder="MM/yyyy">
+                                            <input type="text" name="${type}${counter.index}endDate${posCounter.index}" size=10
+                                                   value="<%=pos.getTimeEnd().format(DateTimeFormatter.ofPattern("uuuu-MM"))%>" placeholder="MM/yyyy">
                                     </dl>
                                     <dl>
                                         <dt>Должность:</dt>
-                                        <dd><input type="text" name='${type}${counter.index}title' size=75
+                                        <dd><input type="text" name='${type}${counter.index}title${posCounter.index}' size=75
                                                    value="${pos.title}">
                                     </dl>
                                     <dl>
