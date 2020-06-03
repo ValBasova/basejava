@@ -2,6 +2,7 @@
 <%@ page import="ru.javawebinar.basejava.model.OrganizationSection" %>
 <%@ page import="ru.javawebinar.basejava.model.TextSection" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
+<%@ page import="ru.javawebinar.basejava.util.DateUtil" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -67,9 +68,9 @@
                     <c:forEach var="pos" items="<%=(orgn.getPositions())%>">
                         <jsp:useBean id="pos" type="ru.javawebinar.basejava.model.Organization.Position"/>
                         <ul>
-                            <li><%=pos.getTimeStart().format(DateTimeFormatter.ofPattern("MM.yyyy"))%>
+                            <li><%=DateUtil.format(pos.getTimeStart())%>
                                 <%=" - "%>
-                                <%=pos.getTimeEnd().format(DateTimeFormatter.ofPattern("MM.yyyy"))%><br/>
+                                <%=DateUtil.format(pos.getTimeEnd())%><br/>
                                 <%=pos.getTitle()%><br/>
                                 <%=pos.getDescription()%><br/></li>
                         </ul>
