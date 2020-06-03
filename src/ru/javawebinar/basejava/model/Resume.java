@@ -17,10 +17,21 @@ import java.util.UUID;
 public class Resume implements Serializable {
     private static final long serialVertionUID = 1l;
 
+    public static final Resume EMPTY = new Resume();
+
+    static {
+        EMPTY.sections.put(SectionType.OBJECTIVE, TextSection.EMPTY);
+        EMPTY.sections.put(SectionType.PERSONAL, TextSection.EMPTY);
+        EMPTY.sections.put(SectionType.ACHIEVEMENT, ListSection.EMPTY);
+        EMPTY.sections.put(SectionType.QUALIFICATIONS, ListSection.EMPTY);
+        EMPTY.sections.put(SectionType.EXPERIENCE, new OrganizationSection(Organization.EMPTY));
+        EMPTY.sections.put(SectionType.EDUCATION, new OrganizationSection(Organization.EMPTY));
+    }
+
     private String uuid;
     private String fullName;
-    private Map<ContactType, String> contacts;
-    private Map<SectionType, AbstractSection> sections;
+    private final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
+    private final Map<SectionType, AbstractSection> sections = new EnumMap<>(SectionType.class);
 
     public Resume() {
     }
@@ -35,8 +46,6 @@ public class Resume implements Serializable {
         Objects.requireNonNull(fullName, "fullName must not be null");
         this.uuid = uuid;
         this.fullName = fullName;
-        contacts = new EnumMap<>(ContactType.class);
-        sections = new EnumMap<>(SectionType.class);
         for (SectionType type : SectionType.values()) {
             switch (type) {
                 case PERSONAL:

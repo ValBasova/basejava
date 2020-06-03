@@ -1,6 +1,7 @@
 package ru.javawebinar.basejava.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,6 +9,15 @@ public class OrganizationSection extends AbstractSection {
     private static final long serialVertionUID = 1l;
 
     private List<Organization> organizationList;
+
+    public OrganizationSection(Organization... organizationList) {
+        this(Arrays.asList(organizationList));
+    }
+
+    public OrganizationSection(List<Organization> organizationList) {
+        Objects.requireNonNull(organizationList, "organizations must not be null");
+        this.organizationList = organizationList;
+    }
 
     public OrganizationSection() {
         this.organizationList = new ArrayList<>();

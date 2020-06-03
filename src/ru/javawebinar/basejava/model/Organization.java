@@ -8,11 +8,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable {
+    public static final Organization EMPTY = new Organization("", "", Position.EMPTY);
     private static final long serialVertionUID = 1l;
 
     private String name;
@@ -20,6 +22,10 @@ public class Organization implements Serializable {
     private List<Position> positions;
 
     public Organization() {
+    }
+
+    public Organization(String name, String url, Position... positions) {
+        this(name, url, Arrays.asList(positions));
     }
 
     public Organization(String name, String url) {
@@ -57,6 +63,8 @@ public class Organization implements Serializable {
         private YearMonth timeEnd;
         private String title;
         private String description;
+
+        public final static Position EMPTY = new Position();
 
         public Position(){
         }

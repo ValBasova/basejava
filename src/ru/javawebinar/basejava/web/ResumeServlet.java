@@ -4,6 +4,7 @@ import ru.javawebinar.basejava.Config;
 import ru.javawebinar.basejava.model.*;
 import ru.javawebinar.basejava.storage.SqlStorage;
 import ru.javawebinar.basejava.storage.Storage;
+import ru.javawebinar.basejava.util.DateUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
     public Storage storage;
@@ -27,8 +29,13 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        Resume r = storage.get(uuid);
-        r.setFullName(fullName);
+        Resume r;
+        if (uuid == null || uuid.length() == 0) {
+            r = new Resume(fullName);
+        } else {
+            r = storage.get(uuid);
+            r.setFullName(fullName);
+        }
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
             if (value != null && value.trim().length() != 0) {
@@ -61,23 +68,28 @@ public class ResumeServlet extends HttpServlet {
                             String url = request.getParameter(type.name() + i + "url");
                             Organization organization = new Organization(name, url);
                             String[] posValues = request.getParameterValues(type.name() + i + "description");
-                            for(int j = 0; j < posValues.length; j++) {
+                            for (int j = 0; j < posValues.length; j++) {
                                 String startDate = request.getParameter(type.name() + i + "startDate" + j);
                                 String endDate = request.getParameter(type.name() + i + "endDate" + j);
                                 String title = request.getParameter(type.name() + i + "title" + j);
                                 String description = posValues[j];
-                                organization.addPosition(startDate, endDate, title, description);
+                                organization.addPosition(new Organization.Position(DateUtil.parse(startDate),
+                                        DateUtil.parse(endDate), title, description));
                             }
                             organizations.add(organization);
                         }
-                       organizationSection.setOrganizationList(organizations);
+                        organizationSection.setOrganizationList(organizations);
                         break;
                 }
             } else {
                 r.getSections().remove(type);
             }
         }
-        storage.update(r);
+        if ((uuid == null || uuid.length() == 0)) {
+            storage.save(r);
+        } else {
+            storage.update(r);
+        }
         response.sendRedirect("resume");
     }
 
@@ -96,8 +108,46 @@ public class ResumeServlet extends HttpServlet {
                 response.sendRedirect("resume");
                 return;
             case "view":
+                r = storage.get(uuid);
+                break;
+            case "add":
+                r = Resume.EMPTY;
+                break;
             case "edit":
                 r = storage.get(uuid);
+                for (SectionType type : SectionType.values()) {
+                    AbstractSection section = r.getSection(type);
+                    switch (type) {
+                        case OBJECTIVE:
+                        case PERSONAL:
+                            if (section == null) {
+                                section = TextSection.EMPTY;
+                            }
+                            break;
+                        case ACHIEVEMENT:
+                        case QUALIFICATIONS:
+                            if (section == null) {
+                                section = ListSection.EMPTY;
+                            }
+                            break;
+                        case EXPERIENCE:
+                        case EDUCATION:
+                            OrganizationSection orgSection = (OrganizationSection) section;
+                            List<Organization> emptyFirstOrganizations = new ArrayList<>();
+                            emptyFirstOrganizations.add(Organization.EMPTY);
+                            if (section != null) {
+                                for (Organization org : orgSection.getOrganizationList()) {
+                                    List<Organization.Position> emptyFirstPositions = new ArrayList<>();
+                                    emptyFirstPositions.add(Organization.Position.EMPTY);
+                                    emptyFirstPositions.addAll(org.getPositions());
+                                    emptyFirstOrganizations.add(new Organization(org.getName(), org.getUrl(), emptyFirstPositions));
+                                }
+                            }
+                            section = new OrganizationSection(emptyFirstOrganizations);
+                            break;
+                    }
+                    r.getSections().put(type, section);
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");

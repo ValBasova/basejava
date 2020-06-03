@@ -9,6 +9,8 @@ public class ListSection extends AbstractSection {
 
     private List<String> textList;
 
+    public final static ListSection EMPTY = new ListSection();
+
     public ListSection() {
         this.textList = new ArrayList<>();
     }
